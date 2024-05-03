@@ -36,11 +36,11 @@ rename vuosi year
 merge m:1 year using "$Deflator", keepusing(cpi_deflator) nogen  
 
 sum cpi_deflator if year==$cpiBaseYear 
-local cpi_Base = `r(mean)'
+local cpi_Base = `r(mean)'  // currently equal to 1 but could change if deflator updated
 foreach v of varlist _all {
     cap confirm numeric variable `v'
 		if _rc==0 & "`v'"!="year" {
-		replace `v' = round(`v'*(`cpi_Base'*cpi_deflator)) 
+		replace `v' = round(`v'*(cpi_deflator/`cpi_Base')) 
 		}
 	}
 drop cpi_deflator 
